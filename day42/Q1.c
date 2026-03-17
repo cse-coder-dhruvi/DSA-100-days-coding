@@ -1,19 +1,40 @@
-from collections import deque
+#include <stdio.h>
 
-# input
-n = int(input())
-queue = deque(map(int, input().split()))
+#define MAX 100
 
-stack = []
+int main() {
+    int n, i;
 
-# Step 1: Queue -> Stack
-while queue:
-    stack.append(queue.popleft())
+    int queue[MAX], front = 0, rear = -1;
+    int stack[MAX], top = -1;
 
-# Step 2: Stack -> Queue
-while stack:
-    queue.append(stack.pop())
+    // input
+    scanf("%d", &n);
 
-# output
-for i in queue:
-    print(i, end=" ")
+    for(i = 0; i < n; i++) {
+        int x;
+        scanf("%d", &x);
+        queue[++rear] = x;
+    }
+
+    // Step 1: Queue -> Stack
+    while(front <= rear) {
+        stack[++top] = queue[front++];
+    }
+
+    // reset queue
+    front = 0;
+    rear = -1;
+
+    // Step 2: Stack -> Queue
+    while(top >= 0) {
+        queue[++rear] = stack[top--];
+    }
+
+    // output
+    for(i = front; i <= rear; i++) {
+        printf("%d ", queue[i]);
+    }
+
+    return 0;
+}
