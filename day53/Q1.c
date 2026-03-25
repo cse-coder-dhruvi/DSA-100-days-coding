@@ -1,49 +1,88 @@
-#include <iostream>
-#include <map>
-#include <queue>
-#include <vector>
-using namespace std;
+#include <stdio.h>
+#include <stdlib.h>
 
+#define MAX 100
+
+// Tree Node
 struct Node {
     int data;
-    Node* left;
-    Node* right;
+    struct Node* left;
+    struct Node* right;
 };
 
-Node* newNode(int data) {
-    Node* temp = new Node();
+// Queue Node (for BFS)
+struct QNode {
+    struct Node* node;
+    int hd;
+};
+
+// Create new node
+struct Node* newNode(int data) {
+    struct Node* temp = (struct Node*)malloc(sizeof(struct Node));
     temp->data = data;
     temp->left = temp->right = NULL;
     return temp;
 }
 
-void verticalOrder(Node* root) {
+// Queue implementation
+struct QNode queue[MAX];
+int front = -1, rear = -1;
+
+void enqueue(struct Node* node, int hd) {
+    if (rear == MAX - 1) return;
+    if (front == -1) front = 0;
+    rear++;
+    queue[rear].node = node;
+    queue[rear].hd = hd;
+}
+
+struct QNode dequeue() {
+    struct QNode temp = queue[front];
+    front++;
+    return temp;
+}
+
+int isEmpty() {
+    return front > rear || front == -1;
+}
+
+// Vertical Order Function
+void verticalOrder(struct Node* root) {
     if (root == NULL) return;
 
-    map<int, vector<int>> mp;
-    queue<pair<Node*, int>> q;
+    int min = 0, max = 0;
 
-    q.push({root, 0});
+    // Store values
+    int result[200][MAX]; 
+    int count[200] = {0};
 
-    while (!q.empty()) {
-        auto p = q.front();
-        q.pop();
+    enqueue(root, 0);
 
-        Node* node = p.first;
-        int hd = p.second;
+    while (!isEmpty()) {
+        struct QNode q = dequeue();
+        struct Node* node = q.node;
+        int hd = q.hd;
 
-        mp[hd].push_back(node->data);
+        int index = hd + 100; // shift for negative
+
+        result[index][count[index]++] = node->data;
+
+        if (hd < min) min = hd;
+        if (hd > max) max = hd;
 
         if (node->left)
-            q.push({node->left, hd - 1});
+            enqueue(node->left, hd - 1);
 
         if (node->right)
-            q.push({node->right, hd + 1});
+            enqueue(node->right, hd + 1);
     }
 
-    for (auto x : mp) {
-        for (int val : x.second)
-            cout << val << " ";
-        cout << endl;
+    // Print result
+    for (int i = min; i <= max; i++) {
+        int index = i + 100;
+        for (int j = 0; j < count[index]; j++) {
+            printf("%d ", result[index][j]);
+        }
+        printf("\n");
     }
 }
