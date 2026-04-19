@@ -1,42 +1,61 @@
 #include <stdio.h>
-#include <stdlib.h>
 #include <limits.h>
 
 #define MAX 1000
 
-// Adjacency matrix representation
 int graph[MAX][MAX];
 int visited[MAX];
-int n, m;
 
-int primMST() {
-    int totalWeight = 0;
-    int minEdge[n];   // store minimum edge weight to connect each vertex
-    int parent[n];    // store parent of each vertex
+int main() {
+    int n, m;
+    scanf("%d %d", &n, &m);
 
-    // Initialize arrays
-    for (int i = 0; i < n; i++) {
-        minEdge[i] = INT_MAX;
-        visited[i] = 0;
-        parent[i] = -1;
+    // Initialize graph
+    for (int i = 1; i <= n; i++)
+        for (int j = 1; j <= n; j++)
+            graph[i][j] = 0;
+
+    // Input edges
+    for (int i = 0; i < m; i++) {
+        int u, v, w;
+        scanf("%d %d %d", &u, &v, &w);
+        graph[u][v] = w;
+        graph[v][u] = w; // undirected
     }
 
-    // Start from vertex 0
-    minEdge[0] = 0;
+    int minEdge[n + 1];
 
-    for (int count = 0; count < n; count++) {
-        // Pick the minimum edge vertex not yet visited
+    // Initialize
+    for (int i = 1; i <= n; i++) {
+        minEdge[i] = INT_MAX;
+        visited[i] = 0;
+    }
+
+    minEdge[1] = 0; // start from node 1
+    int totalWeight = 0;
+
+    for (int count = 1; count <= n; count++) {
         int u = -1;
-        for (int v = 0; v < n; v++) {
-            if (!visited[v] && (u == -1 || minEdge[v] < minEdge[u])) {
-                u = v;
+
+        // Find minimum edge vertex
+        for (int i = 1; i <= n; i++) {
+            if (!visited[i] && (u == -1 || minEdge[i] < minEdge[u])) {
+                u = i;
             }
         }
 
         visited[u] = 1;
         totalWeight += minEdge[u];
 
-        // Update adjacent vertices
-        for (int v = 0; v < n; v++) {
+        // Update neighbors
+        for (int v = 1; v <= n; v++) {
             if (graph[u][v] && !visited[v] && graph[u][v] < minEdge[v]) {
                 minEdge[v] = graph[u][v];
+            }
+        }
+    }
+
+    printf("%d\n", totalWeight);
+
+    return 0;
+}
