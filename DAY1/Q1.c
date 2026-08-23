@@ -1,38 +1,45 @@
 #include <stdio.h>
 
-int main() {
-    int n, pos, x;
-    int i;
+int binarySearch(int arr[], int n, int key) {
+    int low = 0, high = n - 1;
 
-    // Input size
+    while (low <= high) {
+        int mid = (low + high) / 2;
+
+        if (arr[mid] == key)
+            return mid;
+
+        if (arr[mid] < key)
+            low = mid + 1;
+        else
+            high = mid - 1;
+    }
+
+    return -1;
+}
+
+int main() {
+    int n, key;
+
+    printf("Enter number of elements: ");
     scanf("%d", &n);
 
-    // Declare array with extra space
-    int arr[n + 1];
+    int arr[n];
 
-    // Input array elements
-    for (i = 0; i < n; i++) {
+    printf("Enter sorted array:\n");
+    for (int i = 0; i < n; i++)
         scanf("%d", &arr[i]);
-    }
 
-    // Input position (1-based)
-    scanf("%d", &pos);
+    printf("Enter element to search: ");
+    scanf("%d", &key);
 
-    // Input element to insert
-    scanf("%d", &x);
+    int result = binarySearch(arr, n, key);
 
-    // Shift elements to the right
-    for (i = n; i >= pos; i--) {
-        arr[i] = arr[i - 1];
-    }
-
-    // Insert element at position
-    arr[pos - 1] = x;
-
-    // Print updated array
-    for (i = 0; i < n + 1; i++) {
-        printf("%d ", arr[i]);
-    }
+    if (result != -1)
+        printf("Element found at position %d\n", result + 1);
+    else
+        printf("Not Found\n");
 
     return 0;
 }
+
