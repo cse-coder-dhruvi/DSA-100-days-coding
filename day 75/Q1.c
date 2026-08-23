@@ -1,34 +1,44 @@
 #include <stdio.h>
 
-int maxLen(int arr[], int n) {
-    int sum = 0, max_len = 0;
+int binarySearch(int arr[], int n, int key) {
+    int low = 0, high = n - 1;
 
-    // Using simple array as hashmap (assuming sum range)
-    int hash[1000];
-    for(int i = 0; i < 1000; i++)
-        hash[i] = -1;
+    while (low <= high) {
+        int mid = (low + high) / 2;
 
-    for(int i = 0; i < n; i++) {
-        sum += arr[i];
+        if (arr[mid] == key)
+            return mid;
 
-        if(sum == 0)
-            max_len = i + 1;
-
-        if(hash[sum + 500] != -1) {  
-            int len = i - hash[sum + 500];
-            if(len > max_len)
-                max_len = len;
-        } else {
-            hash[sum + 500] = i;
-        }
+        if (arr[mid] < key)
+            low = mid + 1;
+        else
+            high = mid - 1;
     }
-    return max_len;
+
+    return -1;
 }
 
 int main() {
-    int arr[] = {15, -2, 2, -8, 1, 7, 10, 23};
-    int n = sizeof(arr)/sizeof(arr[0]);
+    int n, key;
 
-    printf("%d", maxLen(arr, n));
+    printf("Enter number of elements: ");
+    scanf("%d", &n);
+
+    int arr[n];
+
+    printf("Enter sorted array:\n");
+    for (int i = 0; i < n; i++)
+        scanf("%d", &arr[i]);
+
+    printf("Enter element to search: ");
+    scanf("%d", &key);
+
+    int result = binarySearch(arr, n, key);
+
+    if (result != -1)
+        printf("Element found at position %d\n", result + 1);
+    else
+        printf("Not Found\n");
+
     return 0;
 }
